@@ -72,3 +72,47 @@ for B in B_dataset_test:
         img = np.concatenate([B_i.numpy(), B2A_i.numpy(), B2A2B_i.numpy()], axis=1)
         im.imwrite(img, py.join(save_dir, py.name_ext(B_img_paths_test[i])))
         i += 1
+
+# 生成的B的数据集
+save_dir = py.join(args.experiment_dir, 'samples_testing', 'genB')
+py.mkdir(save_dir)
+i = 0
+for A in A_dataset_test:
+    A2B, A2B2A = sample_A2B(A)
+    for _, A2B_i, _ in zip(A, A2B, A2B2A):
+        img = A2B_i.numpy()
+        im.imwrite(img, py.join(save_dir, py.name_ext(A_img_paths_test[i])))
+        i += 1
+
+# 解码的A的数据集
+save_dir = py.join(args.experiment_dir, 'samples_testing', 'cycleA')
+py.mkdir(save_dir)
+i = 0
+for A in A_dataset_test:
+    A2B, A2B2A = sample_A2B(A)
+    for _, _, B2A2B_i in zip(A, A2B, A2B2A):
+        img = B2A2B_i.numpy()
+        im.imwrite(img, py.join(save_dir, py.name_ext(A_img_paths_test[i])))
+        i += 1
+
+# 生成的A的数据集
+save_dir = py.join(args.experiment_dir, 'samples_testing', 'genA')
+py.mkdir(save_dir)
+i = 0
+for B in B_dataset_test:
+    B2A, B2A2B = sample_B2A(B)
+    for _, B2A_i, _ in zip(B, B2A, B2A2B):
+        img = B2A_i.numpy()
+        im.imwrite(img, py.join(save_dir, py.name_ext(B_img_paths_test[i])))
+        i += 1
+
+# 解码的B的数据集
+save_dir = py.join(args.experiment_dir, 'samples_testing', 'cycleB')
+py.mkdir(save_dir)
+i = 0
+for B in B_dataset_test:
+    B2A, B2A2B = sample_B2A(B)
+    for _, _, B2A2B_i in zip(B, B2A, B2A2B):
+        img = B2A2B_i.numpy()
+        im.imwrite(img, py.join(save_dir, py.name_ext(B_img_paths_test[i])))
+        i += 1

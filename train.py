@@ -13,6 +13,25 @@ import data
 import module
 
 
+def l1_loss(batch_a, batch_b):
+    return tf.losses.MeanAbsoluteError()(batch_a, batch_b)
+
+def l2_loss(batch_a, batch_b):
+    return tf.losses.MeanSquaredError()(batch_a, batch_b)
+
+def ssim_loss(batch_a, batch_b):
+    return 1 - tf.reduce_mean(tf.abs(tf.image.ssim(batch_a, batch_b, max_val=1.0, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03)))
+
+def ms_ssim_loss(batch_a, batch_b):
+    return 1 - tf.reduce_mean(tf.abs(tf.image.ssim_multiscale(batch_a, batch_b, max_val=1.0, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03)))
+
+def ssim_l1_loss(batch_a, batch_b):
+    a = 0.84
+    return a*ssim_loss(batch_a, batch_b) + (1-a)*l1_loss(batch_a, batch_b)
+
+def ssim_l2_loss(batch_a, batch_b):
+    a = 0.84
+    return a*ssim_loss(batch_a, batch_b) + (1-a)*l2_loss(batch_a, batch_b)
 # ==============================================================================
 # =                                   param                                    =
 # ==============================================================================
@@ -69,7 +88,8 @@ D_A = module.ConvDiscriminator(input_shape=(args.crop_size, args.crop_size, 3))
 D_B = module.ConvDiscriminator(input_shape=(args.crop_size, args.crop_size, 3))
 
 d_loss_fn, g_loss_fn = gan.get_adversarial_losses_fn(args.adversarial_loss_mode)
-cycle_loss_fn = tf.losses.MeanAbsoluteError()
+#cycle_loss_fn = tf.losses.MeanAbsoluteError()
+cycle_loss_fn = ssim_loss
 identity_loss_fn = tf.losses.MeanAbsoluteError()
 
 G_lr_scheduler = module.LinearDecay(args.lr, args.epochs * len_dataset, args.epoch_decay * len_dataset)

@@ -23,7 +23,7 @@ def ResnetGenerator(input_shape=(256, 256, 3),
                     dim=64,
                     n_downsamplings=2,
                     n_blocks=9,
-                    norm='instance_norm'):
+                    norm='batch_norm'):
     Norm = _get_norm_layer(norm)
 
     def _residual_block(x):
